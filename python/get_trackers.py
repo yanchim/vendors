@@ -49,26 +49,26 @@ def change_aria2_trackers(text, path):
         if path == "home":
             home = os.environ["HOME"]
 
-            file = open(home + "/.aria2/aria2.conf", "r")
-            all_lines = file.readlines()
-            file.close()
+            conf_file = open(home + "/.aria2/aria2.conf", "r")
+            all_lines = conf_file.readlines()
+            conf_file.close()
 
-            file = open(home + "/.aria2/aria2.conf", "w")
+            conf_file = open(home + "/.aria2/aria2.conf", "w")
         else:
-            file = open(path, "r")
-            all_lines = file.readlines()
-            file.close()
+            conf_file = open(path, "r")
+            all_lines = conf_file.readlines()
+            conf_file.close()
 
-            file = open(path, "w")
+            conf_file = open(path, "w")
 
         string = "bt-tracker=" + text
         string_pattern = "bt-tracker=.*"
 
         for line in all_lines:
             line_replace = re.sub(string_pattern, string, line)
-            file.write(line_replace)
+            conf_file.write(line_replace)
 
-        file.close()
+        conf_file.close()
 
         print("{0}Trackers Updated.{1}".format(green, none))
     except Exception:
