@@ -5,7 +5,7 @@ import argparse
 from urllib import request
 
 """
-python update_v2ray_geo.py
+python get_geo_file.py
 """
 
 
@@ -36,7 +36,7 @@ def update_geo_file(url, path):
         print(Exception)
 
 
-URL_DICT = {
+DAT_URL_DICT = {
     "cdn": [
         "https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geoip.dat",
         "https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat",
@@ -51,23 +51,40 @@ URL_DICT = {
     ],
 }
 
+MMDB_URL_DICT = {
+    "github": [
+        "https://github.com/P3TERX/GeoLite.mmdb/releases/latest/download/GeoLite2-Country.mmdb"
+    ],
+    "ghproxy": [
+        "https://ghproxy.com/https://github.com/P3TERX/GeoLite.mmdb/releases/latest/download/GeoLite2-Country.mmdb"
+    ],
+}
 
-def get_url(str):
+
+def get_url(where, ext):
     """
     :return: url that str matches
     """
-    return URL_DICT[str]
+    if ext == "dat":
+        return DAT_URL_DICT[where]
+    if ext == "mmdb":
+        return MMDB_URL_DICT[where]
 
 
-parser = argparse.ArgumentParser(
-    description="Get latest V2Ray geo files.", add_help=True
-)
+parser = argparse.ArgumentParser(description="Get latest geo files.", add_help=True)
 parser.add_argument(
     "-s",
     "--source",
     default="ghproxy",
     nargs="?",
-    help="cdn, github or ghproxy, default 'ghproxy'",
+    help="cdn, github or ghproxy, default 'ghproxy'.",
+)
+parser.add_argument(
+    "-f",
+    "--format",
+    default="dat",
+    nargs="?",
+    help="dat or mmdb, default 'dat'",
 )
 parser.add_argument(
     "-p", "--path", required=True, nargs=1, help="The path to update geo files"
@@ -75,6 +92,6 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-urls = get_url(args.source)
+urls = get_url(args.source, args.format)
 for url in urls:
     geo_file = update_geo_file(url, args.path[0])
